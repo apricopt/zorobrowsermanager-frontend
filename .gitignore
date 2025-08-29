@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+.next
+
+# Build outputs
+release/
+
+# Runtime files
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Browser data (profiles contain user data)
+browsers/*/
+profiles/*/
+
+# Package manager
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Electron
+app/dist/
+app/build/

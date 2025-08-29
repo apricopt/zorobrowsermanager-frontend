@@ -1,0 +1,31 @@
+{
+  "name": "zoro-browser-manager-web",
+  "version": "1.0.0",
+  "description": "Web dashboard and authentication for Zoro Browser Manager",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.48.0",
+    "lucide-react": "^0.294.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "tailwindcss": "^3.0.0",
+    "@tailwindcss/forms": "^0.5.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0"
+  },
+  "keywords": ["nextjs", "authentication", "dashboard", "browser-manager"],
+  "author": "Zoro Team",
+  "license": "MIT"
+}
