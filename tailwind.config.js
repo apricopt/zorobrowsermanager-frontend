@@ -8,6 +8,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Zoro Brand Colors
+        'brand-primary': '#667eea',
+        'brand-action': '#764ba2',
+        'brand-cta': '#764ba2',
+        // Background
+        'background-light': '#f8f9fa',
+        // Accents & Tags
+        'accent-primary': '#764ba2',
+        'accent-secondary': '#667eea',
+        'tag-primary': '#764ba2',
+        'tag-secondary': '#667eea',
+        // Extended Primary Palette
         primary: {
           50: '#f0f4ff',
           100: '#e0e9ff',
@@ -20,6 +32,7 @@ module.exports = {
           800: '#434190',
           900: '#3c3663',
         },
+        // Extended Secondary Palette
         secondary: {
           50: '#f7f2ff',
           100: '#ede5ff',
@@ -36,6 +49,8 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'brand-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'brand-gradient-reverse': 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
         'primary-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       },
       fontFamily: {

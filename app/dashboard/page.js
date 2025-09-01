@@ -81,8 +81,8 @@ export default function DashboardPage() {
           {/* Profile Management */}
           <div className="card hover:shadow-md transition-shadow">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-600" />
+              <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                <User className="w-5 h-5 text-primary-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 ml-3">
                 Browser Profiles
@@ -100,8 +100,8 @@ export default function DashboardPage() {
           {/* Settings */}
           <div className="card hover:shadow-md transition-shadow">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Settings className="w-5 h-5 text-purple-600" />
+              <div className="w-10 h-10 bg-secondary-100 rounded-lg flex items-center justify-center">
+                <Settings className="w-5 h-5 text-secondary-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 ml-3">
                 Account Settings
@@ -150,16 +150,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Instructions */}
-        <div className="card bg-blue-50 border-blue-200">
+        <div className="card bg-primary-50 border-primary-200">
           <div className="flex items-start">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-              <ExternalLink className="w-4 h-4 text-blue-600" />
+            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+              <ExternalLink className="w-4 h-4 text-primary-500" />
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-blue-900">
+              <h3 className="text-sm font-medium text-primary-800">
                 Desktop Application Required
               </h3>
-              <p className="text-sm text-blue-700 mt-1">
+              <p className="text-sm text-primary-700 mt-1">
                 To create and manage browser profiles, use the desktop application. 
                 Click "Open Desktop App" above to launch it with your authenticated session.
               </p>

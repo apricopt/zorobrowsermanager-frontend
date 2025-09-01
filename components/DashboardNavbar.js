@@ -71,7 +71,7 @@ export default function DashboardNavbar() {
           <div className="flex">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Monitor className="h-8 w-8 text-primary-600" />
+              <img src="/logo.png" alt="Zoro Logo" className="h-8 w-8" />
               <span className="ml-2 text-xl font-bold text-gray-900">
                 Zoro Browser Manager
               </span>
@@ -87,7 +87,7 @@ export default function DashboardNavbar() {
                     onClick={() => router.push(item.href)}
                     className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
                       item.current
-                        ? 'border-primary-500 text-primary-600'
+                        ? 'border-primary-500 text-primary-500'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                     }`}
                   >
@@ -124,7 +124,7 @@ export default function DashboardNavbar() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <span className="ml-3 text-gray-700 text-sm font-medium">
@@ -212,7 +212,7 @@ export default function DashboardNavbar() {
                   }}
                   className={`flex items-center w-full pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
                     item.current
-                      ? 'bg-primary-50 border-primary-500 text-primary-700'
+                      ? 'bg-primary-50 border-primary-500 text-primary-500'
                       : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
                   }`}
                 >
@@ -226,7 +226,7 @@ export default function DashboardNavbar() {
           {/* Mobile User Section */}
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4">
-              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="ml-3">

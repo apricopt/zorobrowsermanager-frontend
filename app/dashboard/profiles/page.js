@@ -153,8 +153,8 @@ export default function ProfilesPage() {
               </div>
             </div>
             
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800 text-sm">
+            <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+              <p className="text-primary-800 text-sm">
                 <strong>Desktop Integration Required:</strong> Profile management will be available through our desktop application for optimal performance and security.
               </p>
             </div>

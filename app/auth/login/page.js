@@ -35,9 +35,19 @@ export default function LoginPage() {
     });
     
     if (isAuthenticated && !isLoading) {
-      console.log('✅ Login page: Redirecting authenticated user to dashboard');
-      console.log('🔄 Router.replace(/dashboard) called');
-      router.replace('/dashboard');
+      // Check if this request came from Electron app (via URL params or referrer)
+      const urlParams = new URLSearchParams(window.location.search);
+      const fromElectron = urlParams.get('from') === 'electron' || 
+                          document.referrer.includes('browsermanager://') ||
+                          window.opener; // Opened in popup/new tab
+      
+      if (fromElectron) {
+        console.log('✅ Login page: User already authenticated, redirecting to app');
+        router.replace('/auth/authenticated');
+      } else {
+        console.log('✅ Login page: Redirecting authenticated user to dashboard');
+        router.replace('/dashboard');
+      }
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -218,7 +228,7 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link href="/auth/register" className="font-medium text-primary-600 hover:text-primary-500">
+            <Link href="/auth/register" className="font-medium text-primary-500 hover:text-primary-600">
               Sign up
             </Link>
           </p>
