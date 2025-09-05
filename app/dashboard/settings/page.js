@@ -77,9 +77,10 @@ export default function SettingsPage() {
     try {
       if (!token) return;
 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const url = forceRefresh 
-        ? 'http://localhost:3001/api/user/subscription?refresh=true'
-        : 'http://localhost:3001/api/user/subscription';
+        ? `${apiUrl}/api/user/subscription?refresh=true`
+        : `${apiUrl}/api/user/subscription`;
 
       const response = await fetch(url, {
         headers: {
@@ -145,7 +146,8 @@ export default function SettingsPage() {
     setSubscription(prev => ({ ...prev, isLoading: true }));
     try {
       // TODO: Call backend API to create Stripe checkout session
-      const response = await fetch('http://localhost:3001/api/user/subscription/checkout', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user/subscription/checkout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -170,7 +172,8 @@ export default function SettingsPage() {
 
   const handleManageBilling = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/user/subscription/portal', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user/subscription/portal`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
