@@ -21,7 +21,7 @@ import {
 import DashboardNavbar from '../../../components/DashboardNavbar';
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('profile');
@@ -31,6 +31,15 @@ export default function SettingsPage() {
     const tabParam = searchParams.get('tab');
     if (tabParam && ['profile', 'security', 'subscription', 'preferences', 'danger'].includes(tabParam)) {
       setActiveTab(tabParam);
+    }
+
+    // Handle payment success - force refresh subscription data
+    const success = searchParams.get('success');
+    if (success === 'true') {
+      // Add a small delay to allow Stripe webhooks to process
+      setTimeout(() => {
+        loadSubscriptionData(true); // Force refresh
+      }, 2000);
     }
   }, [searchParams]);
   const [showPassword, setShowPassword] = useState(false);
@@ -64,41 +73,48 @@ export default function SettingsPage() {
   });
 
   // Load subscription data from backend
-  useEffect(() => {
-    const loadSubscriptionData = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) return;
+  const loadSubscriptionData = async (forceRefresh = false) => {
+    try {
+      if (!token) return;
 
-        const response = await fetch('http://localhost:3001/api/user/subscription', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+      const url = forceRefresh 
+        ? 'http://localhost:3001/api/user/subscription?refresh=true'
+        : 'http://localhost:3001/api/user/subscription';
 
-        if (response.ok) {
-          const data = await response.json();
-          setSubscription(prev => ({
-            ...prev,
-            planType: data.planType,
-            status: data.status,
-            profileLimit: data.profileLimit,
-            currentPeriodEnd: data.currentPeriodEnd
-          }));
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      } catch (error) {
-        console.error('Failed to load subscription data:', error);
-      }
-    };
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        setSubscription(prev => ({
+          ...prev,
+          planType: data.planType,
+          status: data.status,
+          profileLimit: data.profileLimit,
+          currentPeriodEnd: data.currentPeriodEnd
+        }));
+        
+        if (forceRefresh) {
+          console.log('✅ Subscription data refreshed:', data.planType);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load subscription data:', error);
+    }
+  };
+
+  useEffect(() => {
     loadSubscriptionData();
-  }, []);
+  }, [token]);
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     // TODO: Implement profile update API call
-    console.log('Saving profile:', profileData);
+    console.log('Saving profile');
   };
 
   const handleChangePassword = async (e) => {
@@ -114,7 +130,7 @@ export default function SettingsPage() {
   const handleSavePreferences = async (e) => {
     e.preventDefault();
     // TODO: Implement preferences update API call
-    console.log('Saving preferences:', preferences);
+    console.log('Saving preferences');
   };
 
   const handleDeleteAccount = async () => {
@@ -132,7 +148,7 @@ export default function SettingsPage() {
       const response = await fetch('http://localhost:3001/api/user/subscription/checkout', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -157,7 +173,7 @@ export default function SettingsPage() {
       const response = await fetch('http://localhost:3001/api/user/subscription/portal', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
