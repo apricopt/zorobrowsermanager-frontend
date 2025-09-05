@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 
-export default function AuthCallbackPage() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { redirectToElectron } = useAuth();
@@ -141,5 +141,23 @@ export default function AuthCallbackPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="auth-card w-full max-w-md text-center">
+          <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary-600" />
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            Loading...
+          </h1>
+          <p className="text-gray-600">Preparing authentication...</p>
+        </div>
+      </div>
+    }>
+      <CallbackContent />
+    </Suspense>
   );
 }
