@@ -36,10 +36,15 @@ export default function SettingsPage() {
     // Handle payment success - force refresh subscription data
     const success = searchParams.get('success');
     if (success === 'true') {
-      // Add a small delay to allow Stripe webhooks to process
-      setTimeout(() => {
-        loadSubscriptionData(true); // Force refresh
-      }, 2000);
+      // Add multiple refresh attempts to ensure webhook processing is complete
+      const refreshAttempts = [3000, 6000, 10000]; // 3s, 6s, 10s
+      
+      refreshAttempts.forEach((delay, index) => {
+        setTimeout(async () => {
+          console.log(`Refresh attempt ${index + 1}/3...`);
+          await loadSubscriptionData(true);
+        }, delay);
+      });
     }
   }, [searchParams]);
   const [showPassword, setShowPassword] = useState(false);
