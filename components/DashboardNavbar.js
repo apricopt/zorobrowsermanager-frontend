@@ -13,7 +13,8 @@ import {
   X,
   ChevronDown,
   Bell,
-  Search
+  Search,
+  Download
 } from 'lucide-react';
 
 export default function DashboardNavbar() {
@@ -43,6 +44,12 @@ export default function DashboardNavbar() {
       current: pathname === '/dashboard/profiles'
     },
     {
+      name: 'Downloads',
+      href: '/downloads',
+      icon: Download,
+      current: pathname === '/downloads'
+    },
+    {
       name: 'Settings',
       href: '/dashboard/settings',
       icon: Settings,
@@ -53,7 +60,7 @@ export default function DashboardNavbar() {
   const userMenuItems = [
     {
       name: 'Your Profile',
-      href: '/dashboard/profile',
+      href: '/dashboard/settings?tab=profile',
       icon: User
     },
     {

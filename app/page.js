@@ -2,9 +2,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '../hooks/useAuth';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { 
-  Globe, 
   Shield, 
   Settings, 
   Users, 
@@ -43,31 +45,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Globe className="h-8 w-8 text-primary-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">Zoro Browser Manager</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button 
-                onClick={handleSignIn}
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium"
-              >
-                Sign In
-              </button>
-              <button 
-                onClick={handleGetStarted}
-                className="btn-primary"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative py-20 sm:py-24 lg:py-32 gradient-bg">
@@ -93,6 +71,74 @@ export default function HomePage() {
                 Watch Demo
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Download Section */}
+      <section className="py-16 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Download for All Platforms
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Get the desktop application and start managing your browser profiles professionally. Available for Windows, macOS, and Linux.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="text-center p-6 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <img src="/icons8-windows-10-100.png" alt="Windows" className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Windows</h3>
+              <p className="text-sm text-gray-600 mb-4">Windows 10 or later</p>
+              <Link 
+                href="/downloads"
+                className="btn-primary text-sm w-full inline-block text-center"
+              >
+                Download
+              </Link>
+            </div>
+            
+            <div className="text-center p-6 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <img src="/icons8-mac-logo-250.png" alt="macOS" className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">macOS</h3>
+              <p className="text-sm text-gray-600 mb-4">macOS 10.15 or later</p>
+              <Link 
+                href="/downloads"
+                className="btn-primary text-sm w-full inline-block text-center"
+              >
+                Download
+              </Link>
+            </div>
+            
+            <div className="text-center p-6 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <img src="/icons8-linux-100.png" alt="Linux" className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Linux</h3>
+              <p className="text-sm text-gray-600 mb-4">Ubuntu 18.04+ or similar</p>
+              <Link 
+                href="/downloads"
+                className="btn-primary text-sm w-full inline-block text-center"
+              >
+                Download
+              </Link>
+            </div>
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link 
+              href="/downloads"
+              className="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center"
+            >
+              View all download options and system requirements
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
@@ -209,20 +255,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-4 md:mb-0">
-              <Globe className="h-8 w-8 text-primary-400" />
-              <span className="ml-2 text-xl font-bold">Zoro Browser Manager</span>
-            </div>
-            <div className="text-gray-400 text-sm">
-              © 2024 Zoro Browser Manager. Professional browser profile management.
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
