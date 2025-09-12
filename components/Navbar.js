@@ -27,7 +27,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Globe className="h-8 w-8 text-primary-600" />
+              <img src="/logo.png" alt="Zoro Logo" className="h-8 w-8" />
               <span className="ml-2 text-xl font-bold text-gray-900">Zoro Browser Manager</span>
             </Link>
           </div>

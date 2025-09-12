@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { validateEmail } from '../../../lib/utils';
 
@@ -114,6 +114,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="auth-card w-full max-w-md animate-fade-in">
+        {/* Return to Home Link */}
+        <div className="mb-6">
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-sm text-gray-600 hover:text-primary-600 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Return to Home
+          </Link>
+        </div>
+        
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             Welcome Back

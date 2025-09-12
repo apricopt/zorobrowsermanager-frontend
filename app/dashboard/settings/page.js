@@ -48,6 +48,16 @@ export default function SettingsPage() {
     }
   }, [searchParams]);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    profile: false,
+    password: false,
+    preferences: false
+  });
+  const [messages, setMessages] = useState({
+    profile: { type: '', text: '' },
+    password: { type: '', text: '' },
+    preferences: { type: '', text: '' }
+  });
   
   // Form states
   const [profileData, setProfileData] = useState({
@@ -115,28 +125,187 @@ export default function SettingsPage() {
 
   useEffect(() => {
     loadSubscriptionData();
+    loadUserPreferences();
   }, [token]);
+
+  // Load user preferences from backend
+  const loadUserPreferences = async () => {
+    try {
+      if (!token) return;
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.preferences) {
+          setPreferences(data.preferences);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load user preferences:', error);
+    }
+  };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
-    // TODO: Implement profile update API call
-    console.log('Saving profile');
+    setIsLoading(prev => ({ ...prev, profile: true }));
+    setMessages(prev => ({ ...prev, profile: { type: '', text: '' } }));
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user/profile`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: profileData.name,
+          email: profileData.email
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessages(prev => ({ 
+          ...prev, 
+          profile: { type: 'success', text: 'Profile updated successfully!' }
+        }));
+        // Update user data in context if available
+        if (data.user) {
+          // You might want to update the user context here
+          console.log('Profile updated:', data.user);
+        }
+      } else {
+        setMessages(prev => ({ 
+          ...prev, 
+          profile: { type: 'error', text: data.error || 'Failed to update profile' }
+        }));
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      setMessages(prev => ({ 
+        ...prev, 
+        profile: { type: 'error', text: 'Network error. Please try again.' }
+      }));
+    } finally {
+      setIsLoading(prev => ({ ...prev, profile: false }));
+    }
   };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    setIsLoading(prev => ({ ...prev, password: true }));
+    setMessages(prev => ({ ...prev, password: { type: '', text: '' } }));
+
+    // Validation
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
+      setMessages(prev => ({ 
+        ...prev, 
+        password: { type: 'error', text: 'New passwords do not match' }
+      }));
+      setIsLoading(prev => ({ ...prev, password: false }));
       return;
     }
-    // TODO: Implement password change API call
-    console.log('Changing password');
+
+    if (passwordData.newPassword.length < 6) {
+      setMessages(prev => ({ 
+        ...prev, 
+        password: { type: 'error', text: 'New password must be at least 6 characters long' }
+      }));
+      setIsLoading(prev => ({ ...prev, password: false }));
+      return;
+    }
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user/password`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessages(prev => ({ 
+          ...prev, 
+          password: { type: 'success', text: 'Password changed successfully!' }
+        }));
+        // Clear password fields
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      } else {
+        setMessages(prev => ({ 
+          ...prev, 
+          password: { type: 'error', text: data.error || 'Failed to change password' }
+        }));
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      setMessages(prev => ({ 
+        ...prev, 
+        password: { type: 'error', text: 'Network error. Please try again.' }
+      }));
+    } finally {
+      setIsLoading(prev => ({ ...prev, password: false }));
+    }
   };
 
   const handleSavePreferences = async (e) => {
     e.preventDefault();
-    // TODO: Implement preferences update API call
-    console.log('Saving preferences');
+    setIsLoading(prev => ({ ...prev, preferences: true }));
+    setMessages(prev => ({ ...prev, preferences: { type: '', text: '' } }));
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/user/preferences`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(preferences)
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessages(prev => ({ 
+          ...prev, 
+          preferences: { type: 'success', text: 'Preferences saved successfully!' }
+        }));
+      } else {
+        setMessages(prev => ({ 
+          ...prev, 
+          preferences: { type: 'error', text: data.error || 'Failed to save preferences' }
+        }));
+      }
+    } catch (error) {
+      console.error('Preferences save error:', error);
+      setMessages(prev => ({ 
+        ...prev, 
+        preferences: { type: 'error', text: 'Network error. Please try again.' }
+      }));
+    } finally {
+      setIsLoading(prev => ({ ...prev, preferences: false }));
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -259,7 +428,7 @@ export default function SettingsPage() {
                         id="name"
                         value={profileData.name}
                         onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-base px-3 py-2"
+                        className="input-field border mt-1"
                       />
                     </div>
                     
@@ -272,15 +441,39 @@ export default function SettingsPage() {
                         id="email"
                         value={profileData.email}
                         onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-base px-3 py-2"
+                        className="input-field border mt-1"
                       />
                     </div>
                   </div>
 
+                  {/* Success/Error Messages */}
+                  {messages.profile.text && (
+                    <div className={`rounded-md p-4 ${
+                      messages.profile.type === 'success' 
+                        ? 'bg-green-50 border border-green-200 text-green-800' 
+                        : 'bg-red-50 border border-red-200 text-red-800'
+                    }`}>
+                      <p className="text-sm">{messages.profile.text}</p>
+                    </div>
+                  )}
+
                   <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
-                    <button type="submit" className="btn-primary w-full sm:w-auto">
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Changes
+                    <button 
+                      type="submit" 
+                      disabled={isLoading.profile}
+                      className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading.profile ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Changes
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -302,7 +495,7 @@ export default function SettingsPage() {
                         id="currentPassword"
                         value={passwordData.currentPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-base px-3 py-2"
+                        className="input-field border mt-1"
                       />
                     </div>
                     
@@ -317,7 +510,7 @@ export default function SettingsPage() {
                             id="newPassword"
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 pr-10 text-base px-3 py-2"
+                            className="input-field pr-10 border mt-1"
                           />
                           <button
                             type="button"
@@ -342,16 +535,40 @@ export default function SettingsPage() {
                           id="confirmPassword"
                           value={passwordData.confirmPassword}
                           onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-base px-3 py-2"
+                          className="input-field border mt-1"
                         />
                       </div>
                     </div>
                   </div>
 
+                  {/* Success/Error Messages */}
+                  {messages.password.text && (
+                    <div className={`rounded-md p-4 ${
+                      messages.password.type === 'success' 
+                        ? 'bg-green-50 border border-green-200 text-green-800' 
+                        : 'bg-red-50 border border-red-200 text-red-800'
+                    }`}>
+                      <p className="text-sm">{messages.password.text}</p>
+                    </div>
+                  )}
+
                   <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
-                    <button type="submit" className="btn-primary w-full sm:w-auto">
-                      <Lock className="w-4 h-4 mr-2" />
-                      Change Password
+                    <button 
+                      type="submit" 
+                      disabled={isLoading.password}
+                      className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading.password ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Changing...
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-4 h-4 mr-2" />
+                          Change Password
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -603,10 +820,34 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
+                  {/* Success/Error Messages */}
+                  {messages.preferences.text && (
+                    <div className={`rounded-md p-4 ${
+                      messages.preferences.type === 'success' 
+                        ? 'bg-green-50 border border-green-200 text-green-800' 
+                        : 'bg-red-50 border border-red-200 text-red-800'
+                    }`}>
+                      <p className="text-sm">{messages.preferences.text}</p>
+                    </div>
+                  )}
+
                   <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
-                    <button type="submit" className="btn-primary w-full sm:w-auto">
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Preferences
+                    <button 
+                      type="submit" 
+                      disabled={isLoading.preferences}
+                      className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading.preferences ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Preferences
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
