@@ -2,13 +2,11 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
-import { useAuth } from '../../../hooks/useAuth';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { redirectToElectron } = useAuth();
   const [status, setStatus] = useState('processing'); // processing, success, redirecting, error
   const [message, setMessage] = useState('Processing authentication...');
 
@@ -30,24 +28,11 @@ function CallbackContent() {
           localStorage.setItem('auth_timestamp', Date.now().toString());
           
           setStatus('success');
-          setMessage('Authentication successful! Opening Browser Manager...');
+          setMessage('Authentication successful! Redirecting to dashboard...');
           
-          // Automatically redirect to desktop app
+          // Redirect to dashboard for web users (default behavior)
           setTimeout(() => {
-            try {
-              const callbackUrl = process.env.NEXT_PUBLIC_ELECTRON_CALLBACK_URL || 'browsermanager://callback';
-              const redirectUrl = `${callbackUrl}?token=${token}`;
-              window.location.href = redirectUrl;
-              
-              setStatus('redirecting');
-              setMessage('Redirecting to desktop app...');
-            } catch (error) {
-              console.warn('Electron redirect failed:', error);
-              // Fallback to dashboard
-              setTimeout(() => {
-                router.push('/dashboard');
-              }, 2000);
-            }
+            router.push('/dashboard');
           }, 1500);
         } else {
           setStatus('error');
@@ -62,16 +47,6 @@ function CallbackContent() {
     handleCallback();
   }, [searchParams, router]);
 
-  const handleManualRedirect = () => {
-    const token = searchParams.get('token');
-    if (token) {
-      redirectToElectron();
-    }
-  };
-
-  const handleGoToDashboard = () => {
-    router.push('/dashboard');
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -93,24 +68,6 @@ function CallbackContent() {
               Authentication Successful!
             </h1>
             <p className="text-gray-600">{message}</p>
-          </>
-        )}
-
-        {status === 'redirecting' && (
-          <>
-            <div className="w-12 h-12 mx-auto mb-4 relative">
-              <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-            </div>
-            <h1 className="text-xl font-semibold text-gray-900 mb-2">
-              Opening Desktop App
-            </h1>
-            <p className="text-gray-600 mb-6">{message}</p>
-            
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700">
-                <strong>Note:</strong> If the desktop app doesn't open automatically, please check if it's installed and try again.
-              </p>
-            </div>
           </>
         )}
 
